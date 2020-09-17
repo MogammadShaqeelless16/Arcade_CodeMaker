@@ -5,6 +5,15 @@ enum ActionKind {
     Walking_Right,
     Walking_left
 }
+controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
+    mySprite.vy = -200
+    Jump_time = game.runtime()
+    Jump = 1
+})
+let Jump = 0
+let Jump_time = 0
+let mySprite: Sprite = null
+info.setLife(3)
 scene.setBackgroundImage(img`
     9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
     9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
@@ -127,7 +136,7 @@ scene.setBackgroundImage(img`
     9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
     9999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999
     `)
-let mySprite = sprites.create(img`
+mySprite = sprites.create(img`
     . . . . f f f f . . . . 
     . . f f e e e e f f . . 
     . f f e e e e e e f f . 
@@ -145,96 +154,36 @@ let mySprite = sprites.create(img`
     . . . f f f f f f . . . 
     . . . f f . . f f . . . 
     `, SpriteKind.Player)
-mySprite.setFlag(SpriteFlag.BounceOnWall, true)
 controller.moveSprite(mySprite, 80, 80)
 scene.cameraFollowSprite(mySprite)
-tiles.setTilemap(tiles.createTilemap(hex`1400080002000000000000000000000000000000000000000000000000000000000000020304000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002030400000000000000000000020303030400000000000000000000000000000000000000000000000000000000000101010101010101010101010101010101010101`, img`
+tiles.setTilemap(tiles.createTilemap(hex`14000800000000000000000000000000000000000000000000000000000000000000000203040000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020304000000000000000000000901010110000000000000000000050101010101060b0b0b0a0000050101010101010607070707070b0b0b0b0a000007070707070708`, img`
     . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . 2 2 2 . . . . . . 
     . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . . . . . . . . 
     . . . . . . . . . . . . . 2 2 2 . . . . 
     . . . . . . 2 2 2 2 2 . . . . . . . . . 
-    . . . . . . . . . . . . . . . . . . . . 
-    2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 
-    `, [myTiles.transparency16,sprites.builtin.forestTiles2,sprites.builtin.forestTiles17,sprites.builtin.forestTiles18,sprites.builtin.forestTiles19], TileScale.Sixteen))
-info.setLife(3)
-info.setScore(0)
-let anim_idle = animation.createAnimation(ActionKind.Idle, 100)
-animation.attachAnimation(mySprite, anim_idle)
-anim_idle.addAnimationFrame(img`
-    . . . . f f f f . . . . 
-    . . f f e e e e f f . . 
-    . f f e e e e e e f f . 
-    f f f f 4 e e e f f f f 
-    f f f 4 4 4 e e f f f f 
-    f f f 4 4 4 4 e e f f f 
-    f 4 e 4 4 4 4 4 4 e 4 f 
-    f 4 4 f f 4 4 f f 4 4 f 
-    f e 4 d d d d d d 4 e f 
-    . f e d d b b d d e f . 
-    . f f e 4 4 4 4 e f f . 
-    e 4 f b 1 1 1 1 b f 4 e 
-    4 d f 1 1 1 1 1 1 f d 4 
-    4 4 f 6 6 6 6 6 6 f 4 4 
-    . . . f f f f f f . . . 
-    . . . f f . . f f . . . 
-    `)
-anim_idle.addAnimationFrame(img`
-    . . . . . . . . . . . . 
-    . . . f f f f f f . . . 
-    . f f f e e e e f f f . 
-    f f f e e e e e e f f f 
-    f f f f 4 e e e f f f f 
-    f f f 4 4 4 e e f f f f 
-    f f f 4 4 4 4 e e f f f 
-    f 4 e 4 4 4 4 4 4 e 4 f 
-    f 4 4 f f 4 4 f f 4 4 f 
-    f e 4 d d d d d d 4 e f 
-    . f e d d b b d 4 e f e 
-    f f f e 4 4 4 4 d d 4 e 
-    e 4 f b 1 1 1 e d d e . 
-    . . f 6 6 6 6 f e e . . 
-    . . f f f f f f f . . . 
-    . . f f f . . . . . . . 
-    `)
-anim_idle.addAnimationFrame(img`
-    . . . . f f f f . . . . 
-    . . f f e e e e f f . . 
-    . f f e e e e e e f f . 
-    f f f f 4 e e e f f f f 
-    f f f 4 4 4 e e f f f f 
-    f f f 4 4 4 4 e e f f f 
-    f 4 e 4 4 4 4 4 4 e 4 f 
-    f 4 4 f f 4 4 f f 4 4 f 
-    f e 4 d d d d d d 4 e f 
-    . f e d d b b d d e f . 
-    . f f e 4 4 4 4 e f f . 
-    e 4 f b 1 1 1 1 b f 4 e 
-    4 d f 1 1 1 1 1 1 f d 4 
-    4 4 f 6 6 6 6 6 6 f 4 4 
-    . . . f f f f f f . . . 
-    . . . f f . . f f . . . 
-    `)
-anim_idle.addAnimationFrame(img`
-    . . . . . . . . . . . . 
-    . . . f f f f f f . . . 
-    . f f f e e e e f f f . 
-    f f f e e e e e e f f f 
-    f f f f 4 e e e f f f f 
-    f f f 4 4 4 e e f f f f 
-    f f f 4 4 4 4 e e f f f 
-    f 4 e 4 4 4 4 4 4 e 4 f 
-    f 4 4 f f 4 4 f f 4 4 f 
-    f e 4 d d d d d d 4 e f 
-    e f e 4 d b b d d e f . 
-    e 4 d d 4 4 4 4 e f f f 
-    . e d d e 1 1 1 b f 4 e 
-    . . e e f 6 6 6 6 f . . 
-    . . . f f f f f f f . . 
-    . . . . . . . f f f . . 
-    `)
-animation.setAction(mySprite, ActionKind.Idle)
+    2 2 2 2 2 2 . . . . . . . . . . . . . . 
+    2 2 2 2 2 2 2 2 2 2 2 . . 2 2 2 2 2 2 2 
+    `, [myTiles.transparency16,sprites.builtin.forestTiles2,sprites.builtin.forestTiles17,sprites.builtin.forestTiles18,sprites.builtin.forestTiles19,sprites.builtin.forestTiles1,sprites.builtin.forestTiles5,sprites.builtin.forestTiles6,sprites.builtin.forestTiles7,sprites.builtin.forestTiles16,sprites.builtin.forestTiles11,sprites.builtin.forestTiles10], TileScale.Sixteen))
+let mySprite2 = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Player)
 let anim_walk_right = animation.createAnimation(ActionKind.Walking_Right, 100)
 animation.attachAnimation(mySprite, anim_walk_right)
 anim_walk_right.addAnimationFrame(img`
@@ -347,12 +296,95 @@ anim_walk_left.addAnimationFrame(img`
     . f f f f f f f f f f . 
     . . f f f . . . f f . . 
     `)
+info.setScore(0)
+let anim_idle = animation.createAnimation(ActionKind.Idle, 100)
+animation.attachAnimation(mySprite, anim_idle)
+anim_idle.addAnimationFrame(img`
+    . . . . f f f f . . . . 
+    . . f f e e e e f f . . 
+    . f f e e e e e e f f . 
+    f f f f 4 e e e f f f f 
+    f f f 4 4 4 e e f f f f 
+    f f f 4 4 4 4 e e f f f 
+    f 4 e 4 4 4 4 4 4 e 4 f 
+    f 4 4 f f 4 4 f f 4 4 f 
+    f e 4 d d d d d d 4 e f 
+    . f e d d b b d d e f . 
+    . f f e 4 4 4 4 e f f . 
+    e 4 f b 1 1 1 1 b f 4 e 
+    4 d f 1 1 1 1 1 1 f d 4 
+    4 4 f 6 6 6 6 6 6 f 4 4 
+    . . . f f f f f f . . . 
+    . . . f f . . f f . . . 
+    `)
+anim_idle.addAnimationFrame(img`
+    . . . . . . . . . . . . 
+    . . . f f f f f f . . . 
+    . f f f e e e e f f f . 
+    f f f e e e e e e f f f 
+    f f f f 4 e e e f f f f 
+    f f f 4 4 4 e e f f f f 
+    f f f 4 4 4 4 e e f f f 
+    f 4 e 4 4 4 4 4 4 e 4 f 
+    f 4 4 f f 4 4 f f 4 4 f 
+    f e 4 d d d d d d 4 e f 
+    . f e d d b b d 4 e f e 
+    f f f e 4 4 4 4 d d 4 e 
+    e 4 f b 1 1 1 e d d e . 
+    . . f 6 6 6 6 f e e . . 
+    . . f f f f f f f . . . 
+    . . f f f . . . . . . . 
+    `)
+anim_idle.addAnimationFrame(img`
+    . . . . f f f f . . . . 
+    . . f f e e e e f f . . 
+    . f f e e e e e e f f . 
+    f f f f 4 e e e f f f f 
+    f f f 4 4 4 e e f f f f 
+    f f f 4 4 4 4 e e f f f 
+    f 4 e 4 4 4 4 4 4 e 4 f 
+    f 4 4 f f 4 4 f f 4 4 f 
+    f e 4 d d d d d d 4 e f 
+    . f e d d b b d d e f . 
+    . f f e 4 4 4 4 e f f . 
+    e 4 f b 1 1 1 1 b f 4 e 
+    4 d f 1 1 1 1 1 1 f d 4 
+    4 4 f 6 6 6 6 6 6 f 4 4 
+    . . . f f f f f f . . . 
+    . . . f f . . f f . . . 
+    `)
+anim_idle.addAnimationFrame(img`
+    . . . . . . . . . . . . 
+    . . . f f f f f f . . . 
+    . f f f e e e e f f f . 
+    f f f e e e e e e f f f 
+    f f f f 4 e e e f f f f 
+    f f f 4 4 4 e e f f f f 
+    f f f 4 4 4 4 e e f f f 
+    f 4 e 4 4 4 4 4 4 e 4 f 
+    f 4 4 f f 4 4 f f 4 4 f 
+    f e 4 d d d d d d 4 e f 
+    e f e 4 d b b d d e f . 
+    e 4 d d 4 4 4 4 e f f f 
+    . e d d e 1 1 1 b f 4 e 
+    . . e e f 6 6 6 6 f . . 
+    . . . f f f f f f f . . 
+    . . . . . . . f f f . . 
+    `)
+animation.setAction(mySprite, ActionKind.Idle)
 game.onUpdate(function () {
-    if (mySprite.vx > 0) {
-        animation.setAction(mySprite, ActionKind.Walking_Right)
-    } else if (mySprite.vx < 0) {
-        animation.setAction(mySprite, ActionKind.Walking_left)
-    } else {
-        animation.setAction(mySprite, ActionKind.Idle)
+    if (mySprite.isHittingTile(CollisionDirection.Bottom)) {
+        mySprite.setVelocity(0, 200)
+        if (mySprite.vx > 0) {
+            animation.setAction(mySprite, ActionKind.Walking_Right)
+        } else if (mySprite.vx < 0) {
+            animation.setAction(mySprite, ActionKind.Walking_left)
+        } else {
+            animation.setAction(mySprite, ActionKind.Idle)
+        }
+    }
+    if (game.runtime() - Jump_time > "80" && Jump == "1") {
+        mySprite.vy = 200
+        Jump = 0
     }
 })
